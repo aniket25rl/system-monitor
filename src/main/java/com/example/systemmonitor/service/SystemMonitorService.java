@@ -34,6 +34,13 @@ public class SystemMonitorService {
         this.os = systemInfo.getOperatingSystem();
     }
 
+    public SystemMonitorService(SystemInfo systemInfo) {
+        this.systemInfo = systemInfo;
+        this.processor = systemInfo.getHardware().getProcessor();
+        this.memory = systemInfo.getHardware().getMemory();
+        this.os = systemInfo.getOperatingSystem();
+    }
+
     public CpuUsage getCpuUsage() {
         double cpuLoad = processor.getSystemCpuLoad(1000) * 100;
         return new CpuUsage(Math.round(cpuLoad * 10.0) / 10.0);
