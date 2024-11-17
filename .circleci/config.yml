@@ -16,7 +16,7 @@ jobs:
           command: mvn dependency:go-offline
       - run:
           name: Build and Test
-          command: mvn clean test
+          command: mvn clean package
       - run:
           name: Generate Code Coverage
           command: mvn jacoco:report
