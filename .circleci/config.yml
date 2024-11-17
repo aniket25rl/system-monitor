@@ -35,7 +35,7 @@ jobs:
           at: ~/repo
       - run:
           name: Build Docker Image
-          command: docker build -t aniket104/systemmonitor:latest -f ~/repo/Dockerfile ~/repo
+          command: docker build -t aniket104/systemmonitor:latest .
       - run:
           name: Push Docker Image to Dockerhub
           command: |
