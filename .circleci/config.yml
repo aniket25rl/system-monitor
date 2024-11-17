@@ -1,0 +1,50 @@
+version: 2.1
+
+executors:
+  maven-executor:
+    docker:
+      - image: circleci/openjdk:17
+    working_directory: ~/repo
+
+jobs:
+  build-and-test:
+    executor: maven-executor
+    steps:
+      - checkout
+      - run:
+          name: Set Up Maven Dependencies
+          command: mvn dependency:go-offline
+      - run:
+          name: Build and Test
+          command: mvn clean test
+      - run:
+          name: Generate Code Coverage
+          command: mvn jacoco:report
+      - persist_to_workspace:
+          root: ~/repo
+          paths:
+            - target
+
+  docker-build:
+    docker:
+      - image: docker:stable
+    steps:
+      - checkout
+      - setup_remote_docker
+      - run:
+          name: Build Docker Image
+          command: docker build -t your_dockerhub_username/your_image_name:latest .
+      - run:
+          name: Push Docker Image to Dockerhub
+          command: |
+            echo "$DOCKERHUB_PASSWORD" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin
+            docker push your_dockerhub_username/your_image_name:latest
+
+workflows:
+  version: 2
+  test-and-build:
+    jobs:
+      - build-and-test
+      - docker-build:
+          requires:
+            - build-and-test
