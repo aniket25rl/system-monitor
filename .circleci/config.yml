@@ -24,7 +24,6 @@ jobs:
           root: ~/repo
           paths:
             - target
-            - target/site/jacoco
 
   docker-build:
     docker:
@@ -36,10 +35,10 @@ jobs:
           at: ~/repo
       - run:
           name: Verify Target Directory
-          command: ls ~/repo/target
+          command: ls ~/repo
       - run:
           name: Build Docker Image
-          command: docker build --progress=plain --no-cache -t aniket104/systemmonitor:latest ~/repo
+          command: docker build --no-cache -t aniket104/systemmonitor:latest ~/repo
       - run:
           name: Push Docker Image to Dockerhub
           command: |
