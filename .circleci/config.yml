@@ -36,7 +36,7 @@ jobs:
           at: ~/repo
       - run:
           name: Build Docker Image
-          command: docker build -t --no-cache aniket104/systemmonitor:latest .
+          command: docker build --no-cache -t aniket104/systemmonitor:latest .
       - run:
           name: Push Docker Image to Dockerhub
           command: |
