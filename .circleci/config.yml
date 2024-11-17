@@ -31,14 +31,16 @@ jobs:
     steps:
       - checkout
       - setup_remote_docker
+      - attach_workspace:
+          at: ~/repo
       - run:
           name: Build Docker Image
-          command: docker build -t your_dockerhub_username/your_image_name:latest .
+          command: docker build -t aniket104/systemmonitor:latest -f ~/repo/Dockerfile ~/repo
       - run:
           name: Push Docker Image to Dockerhub
           command: |
             echo "$DOCKERHUB_PASSWORD" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin
-            docker push your_dockerhub_username/your_image_name:latest
+            docker push aniket104/systemmonitor:latest
 
 workflows:
   version: 2
