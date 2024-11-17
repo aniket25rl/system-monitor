@@ -35,6 +35,9 @@ jobs:
       - attach_workspace:
           at: ~/repo
       - run:
+          name: Verify Target Directory
+          command: ls ~/repo/target
+      - run:
           name: Build Docker Image
           command: docker build --no-cache -t aniket104/systemmonitor:latest .
       - run:
