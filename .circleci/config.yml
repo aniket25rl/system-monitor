@@ -39,7 +39,7 @@ jobs:
           command: ls ~/repo/target
       - run:
           name: Build Docker Image
-          command: docker build --progress=plain --no-cache -t aniket104/systemmonitor:latest -f ~/repo/Dockerfile ~/repo
+          command: docker build --progress=plain --no-cache -t aniket104/systemmonitor:latest ~/repo
       - run:
           name: Push Docker Image to Dockerhub
           command: |
