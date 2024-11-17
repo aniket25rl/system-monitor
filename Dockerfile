@@ -4,6 +4,8 @@ FROM openjdk:17-jdk-slim
 # Set the working directory
 WORKDIR /app
 
+RUN ls
+
 # Copy the JAR file to the container
 COPY target/systemmonitor-0.0.1-SNAPSHOT.jar systemmonitor.jar
 
