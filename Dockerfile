@@ -10,7 +10,7 @@ RUN echo "Checking directory /app" && ls -al /app || echo "Directory /app does n
 
 
 # Copy the JAR file to the container
-COPY target/systemmonitor-0.0.1-SNAPSHOT.jar systemmonitor.jar
+COPY ~/repo/target/systemmonitor-0.0.1-SNAPSHOT.jar systemmonitor.jar
 
 # Expose the application port
 EXPOSE 8080
