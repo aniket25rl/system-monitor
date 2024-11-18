@@ -35,7 +35,7 @@ jobs:
           at: ~/repo
       - run:
           name: Verify Target Directory
-          command: ls ~/repo
+          command: ls -l ~/repo
       - run:
           name: Build Docker Image
           command: docker build --no-cache -t aniket104/systemmonitor:latest ~/repo
