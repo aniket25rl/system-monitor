@@ -27,7 +27,7 @@ jobs:
 
   docker-build:
     docker:
-      - image: docker:stable
+      - image: docker:executor
     steps:
       - checkout
       - setup_remote_docker
