@@ -37,6 +37,9 @@ jobs:
           root: ~/repo
           paths:
             - target
+      - store_artifacts:
+          path: target/site/jacoco
+          destination: jacoco
 
   docker-build:
     executor: docker-executor
