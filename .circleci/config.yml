@@ -41,16 +41,16 @@ jobs:
   docker-build:
     executor: docker-executor
     steps:
-      # Removed the 'checkout' step
-      - setup_remote_docker
+      - checkout  # Re-add the checkout step to include the Dockerfile and source code
       - attach_workspace:
           at: ~/repo
+      - setup_remote_docker
       - run:
-          name: Verify Target Directory
+          name: Verify Presence of Dockerfile and Target Directory
           command: |
             echo "Listing contents of ~/repo:"
             ls -l ~/repo
-            echo "Verifying target directory exists:"
+            echo "Listing contents of ~/repo/target:"
             ls -l ~/repo/target
       - run:
           name: Build Docker Image
