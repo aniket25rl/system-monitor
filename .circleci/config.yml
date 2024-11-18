@@ -6,14 +6,27 @@ executors:
       - image: cimg/openjdk:17.0
     working_directory: ~/repo
 
+  docker-executor:
+    docker:
+      - image: docker:stable
+    working_directory: ~/repo
+
 jobs:
   build-and-test:
     executor: maven-executor
     steps:
       - checkout
+      - restore_cache:
+          keys:
+            - maven-deps-{{ checksum "pom.xml" }}
+            - maven-deps-
       - run:
           name: Set Up Maven Dependencies
           command: mvn dependency:go-offline
+      - save_cache:
+          paths:
+            - ~/.m2
+          key: maven-deps-{{ checksum "pom.xml" }}
       - run:
           name: Build and Test
           command: mvn clean package
@@ -26,19 +39,24 @@ jobs:
             - target
 
   docker-build:
-    docker:
-      - image: docker:stable
+    executor: docker-executor
     steps:
-      - checkout
+      # Removed the 'checkout' step
       - setup_remote_docker
       - attach_workspace:
           at: ~/repo
       - run:
           name: Verify Target Directory
-          command: ls -l ~/repo
+          command: |
+            echo "Listing contents of ~/repo:"
+            ls -l ~/repo
+            echo "Verifying target directory exists:"
+            ls -l ~/repo/target
       - run:
           name: Build Docker Image
-          command: docker build --no-cache -t aniket104/systemmonitor:latest .
+          command: |
+            cd ~/repo
+            docker build --no-cache -t aniket104/systemmonitor:latest .
       - run:
           name: Push Docker Image to Dockerhub
           command: |
