@@ -37,6 +37,10 @@ jobs:
           root: ~/repo
           paths:
             - target
+      - run:
+          name: Upload Coverage to Codecov
+          command: |
+            bash <(curl -s https://codecov.io/bash) -t $CODECOV_TOKEN -f target/site/jacoco/jacoco.xml
       - store_artifacts:
           path: target/site/jacoco
           destination: jacoco
@@ -44,7 +48,7 @@ jobs:
   docker-build:
     executor: docker-executor
     steps:
-      - checkout  # Re-add the checkout step to include the Dockerfile and source code
+      - checkout
       - attach_workspace:
           at: ~/repo
       - setup_remote_docker
