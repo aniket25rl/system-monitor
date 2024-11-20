@@ -11,13 +11,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@WebMvcTest(SystemMonitorController.class)
+
+@WebMvcTest(value = SystemMonitorController.class, properties = {
+        "spring.mvc.throw-exception-if-no-handler-found=true",
+        "spring.web.resources.add-mappings=false"
+})
 class SystemMonitorControllerTest {
 
     @Autowired
@@ -64,6 +69,17 @@ class SystemMonitorControllerTest {
     }
 
     @Test
+    void testGetMemoryUsage_Error() throws Exception {
+        // Simulate service throwing an exception
+        when(systemMonitorService.getMemoryUsage()).thenThrow(new RuntimeException("Service error"));
+
+        // Perform GET request and validate 500 response
+        mockMvc.perform(get("/api/memory")
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isInternalServerError());
+    }
+
+    @Test
     void testGetDiskUsage_Success() throws Exception {
         // Mock the service response
         DiskUsage mockDiskUsage = new DiskUsage(60.0);
@@ -74,6 +90,17 @@ class SystemMonitorControllerTest {
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.usage").value(60.0));
+    }
+
+    @Test
+    void testGetDiskUsage_Error() throws Exception {
+        // Simulate service throwing an exception
+        when(systemMonitorService.getCpuUsage()).thenThrow(new RuntimeException("Service error"));
+
+        // Perform GET request and validate 500 response
+        mockMvc.perform(get("/api/disk")
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isInternalServerError());
     }
 
     @Test
@@ -88,6 +115,25 @@ class SystemMonitorControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.bytesSent").value(1024))
                 .andExpect(jsonPath("$.bytesReceived").value(2048));
+    }
+
+    @Test
+    void testGetBandwidthUsage_Error() throws Exception {
+        // Simulate service throwing an exception
+        when(systemMonitorService.getBandwidthUsage()).thenThrow(new RuntimeException("Service error"));
+
+        // Perform GET request and validate 500 response
+        mockMvc.perform(get("/api/bandwidth")
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isInternalServerError());
+    }
+
+    @Test
+    void testUndefinedEndpoint_ShouldReturn404() throws Exception {
+        // Perform GET request to an undefined endpoint
+        mockMvc.perform(get("/api/undefined")
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound());
     }
 
 }
