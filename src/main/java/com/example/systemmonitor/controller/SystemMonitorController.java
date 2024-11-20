@@ -69,17 +69,4 @@ public class SystemMonitorController {
         }
     }
 
-    // Handle 404
-    @ExceptionHandler({org.springframework.web.servlet.NoHandlerFoundException.class})
-    public ResponseEntity<String> handleNotFound(Exception ex) {
-        logger.warn("404 error: {}", ex.getMessage());
-        return ResponseEntity.status(404).body("{\"error\": \"Endpoint not found\"}");
-    }
-
-    // Handle generic exceptions
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<String> handleInternalError(Exception ex) {
-        logger.error("500 error: {}", ex.getMessage());
-        return ResponseEntity.status(500).body("{\"error\": \"Internal server error\"}");
-    }
 }
